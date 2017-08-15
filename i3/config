@@ -179,7 +179,14 @@ mode "pass-through" {
 
 bindsym $mod+Escape mode "pass-through"
 
+# Windows with urgency hint automatically recieve focus
+# (e.g. clicking a Telegram notification, open browser link)
+for_window [urgent="latest"] focus
+
+# We can make this granular to specific applications with class attr:
+#for_window [urgent="latest" class="XTerm"] focus
+
 # Automatically run on startup
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-clipman
-
+exec --no-startup-id /usr/bin/gnome-settings-daemon
