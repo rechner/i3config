@@ -32,15 +32,23 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
+# lock the screen
+bindsym Control+Mod1+L exec i3lock -f
+
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
+bindsym $mod+Shift+d exec --no-startup-id j4-dmenu-desktop
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# show popup clipboard manager
+bindsym Control+Mod5+h exec --no-startup-id xfce4-popup-clipman
+bindsym Control+Mod1+h exec --no-startup-id xfce4-popup-clipman
 
 # change focus
 bindsym $mod+j focus left
@@ -154,13 +162,30 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Shutdown
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Pause mode "$mode_system"
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
         status_command i3status
+	position top
 }
 
-#focus_follows_mouse no
+focus_follows_mouse no
 workspace_auto_back_and_forth yes
 
 # Pulse Audio controls
@@ -182,6 +207,7 @@ bindsym $mod+Escape mode "pass-through"
 # Windows with urgency hint automatically recieve focus
 # (e.g. clicking a Telegram notification, open browser link)
 for_window [urgent="latest"] focus
+bindsym $mod+x [urgent=latest] focus
 
 # We can make this granular to specific applications with class attr:
 #for_window [urgent="latest" class="XTerm"] focus
@@ -190,3 +216,28 @@ for_window [urgent="latest"] focus
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-clipman
 exec --no-startup-id /usr/bin/gnome-settings-daemon
+
+# Screen lock/screen saver
+exec --no-startup-id xset dpms 600
+exec --no-startup-id xautolock -time 10 -locker "i3lock -f"
+
+##
+# move floating windows with keys
+bindsym $mod+m mode "move" focus floating
+mode "move" {
+    bindsym $mod+Tab focus right
+
+    bindsym Left  move left
+    bindsym Down  move down
+    bindsym Up    move up
+    bindsym Right move right
+
+    bindsym h     move left
+    bindsym j     move down
+    bindsym k     move up
+    bindsym l     move right
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
